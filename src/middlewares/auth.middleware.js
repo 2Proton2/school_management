@@ -1,5 +1,6 @@
 const knex = require('knex')(require('../db/knexfile'));
 const uuid = require('uuid');
+const bcrypt = require('bcryptjs');
 
 exports.authenticate = async (req, res, next) => {
     try {
@@ -10,7 +11,10 @@ exports.authenticate = async (req, res, next) => {
         if(!isEmailValid.length){
             throw new Error("Invalid Credentials")
         }
-        if(!password === isEmailValid[0].password){
+
+        let passwordMatch = await bcrypt.compare(password, isEmailValid[0].password);
+
+        if(!passwordMatch){
             throw new Error("Invalid Credentials")
         }
 

@@ -2,10 +2,15 @@ const Student = require('../models/user.model');
 const crypto = require('crypto');
 const uuid = require('uuid');
 const API = require('../models/api.model');
+const bcrypt = require('bcryptjs');
 
 exports.createUser = async (req, res) => {
   try {
-    const newStudent = await Student.forge(req.body).save();
+    let { password } = req.body;
+    let studentInstance = new Student(req.body);
+    const hashedPass = await bcrypt.hash(studentInstance.get('password'), 12);
+    studentInstance.set('password', hashedPass);
+    const newStudent = await studentInstance.save();
     const user_id = newStudent.get('id');
     const api_key = crypto.randomBytes(32).toString('hex');
 
@@ -23,8 +28,7 @@ exports.createUser = async (req, res) => {
 
 exports.logUserIn = async (req, res) => {
   try {
-    res.header('authorization', req.token)
-    console.log(res)
+    res.header('authorization', req.token);
     res.status(200).json({message: "Logged in successful"});
   } catch (error) {
     res.status(500).json({ error: error.message });
