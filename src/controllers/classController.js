@@ -1,4 +1,3 @@
-// /school-api/controllers/classController.js
 const Class = require('../models/class.model');
 const knex = require('knex')(require('../db/knexfile'));
 
