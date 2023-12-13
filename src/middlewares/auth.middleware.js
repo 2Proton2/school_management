@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 
 exports.authenticate = async (req, res, next) => {
     try {
+        console.log('User Entered Details => ', req.body);
         const { email, password } = req.body;
 
         const isEmailValid = await knex('users').where('email', email);
